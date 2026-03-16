@@ -56,9 +56,9 @@ fun TelaInicial(modifier: Modifier = Modifier) {
     val scope = rememberCoroutineScope()
     
 
-    fun playSound() {
+    fun playSound(soundRes: Int) {
         try {
-            val mp = MediaPlayer.create(context, R.raw.roleta)
+            val mp = MediaPlayer.create(context, soundRes)
             mp.setOnCompletionListener { it.release() } // Libera memória ao terminar
             mp.start()
         } catch (e: Exception) {
@@ -86,10 +86,6 @@ fun TelaInicial(modifier: Modifier = Modifier) {
             modifier = Modifier
                 .size(220.dp)
                 .padding(8.dp),
-            shape = MaterialTheme.shapes.extraLarge,
-            tonalElevation = 8.dp,
-            shadowElevation = 12.dp,
-            color = MaterialTheme.colorScheme.surfaceVariant
         ) {
             Box(contentAlignment = Alignment.Center) {
                 Image(
@@ -120,7 +116,7 @@ fun TelaInicial(modifier: Modifier = Modifier) {
                     resultText = "Sorteando..."
                     
 
-                    playSound()
+                    playSound(R.raw.roleta)
                     
                     scope.launch {
 
@@ -133,6 +129,10 @@ fun TelaInicial(modifier: Modifier = Modifier) {
                         currentImageIndex = randomIndex
                         resultText = "Você tirou:\n${options[randomIndex].second.uppercase()}!"
 
+                        // O Android renomeia automaticamente arquivos para minúsculas
+                        // Então mesmo que o arquivo seja Resultado.m4a, no código usamos r.raw.resultado
+                        playSound(R.raw.resultado)
+
                         isPlaying = false
                     }
                 }
@@ -141,7 +141,7 @@ fun TelaInicial(modifier: Modifier = Modifier) {
         ) {
             Text(
                 text = if (isPlaying) "SORTEANDO..." else "JOGAR",
-                fontSize = 22.sp,
+                fontSize = 30.sp,
                 fontWeight = FontWeight.Bold
             )
         }
